@@ -50,9 +50,9 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 ### Predictions (Future Spreads)  
 | Date       | Ticker Pair | Spread | CHRONOBERT Spread | CHRONOBERT Position | LLM Spread | LLM Position | Traditional Method Spread | Traditional Position |
 |------------|-------------|--------|-------------------|----------------------|-------------|---------------|----------------------------|----------------------|
-|
-|
-|
+||
+||
+||
 
 ---
 
