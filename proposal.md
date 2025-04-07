@@ -116,7 +116,9 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 
 ## Raw Inputs & Storage  
 
-**Folder Structure**  (Up for grabs) 
+**Folder Structure**  
+*Subject to Change*
+
 ```
 /project/
 ├── inputs/ (in .gitignore)
