@@ -153,4 +153,4 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 
 We want to build an interactive dashboard where users can select a ticker pair and time period to view results. The dashboard will display a chart comparing returns across CHRONOBERT, BERT, and traditional methods, as well as a chart comparing the predicted spreads for each method. It will also include a summary of key success metrics such as R², MSE, Sharpe Ratio, and overall returns. This interactive format allows users to directly explore how CHRONOBERT compares to BERT and understand the advantages it brings to pairs trading.
 
-![Logo](images/my_image.png)
+![Logo](images/dashboard_sketch.jpg)
