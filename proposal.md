@@ -46,8 +46,8 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 ||
 
 ### Market Return Data  
-| Date       | Ticker       | Adjusted Close |
-|------------|--------------|----------------|
+| Date       | Ticker       | Adjusted Close | Return |
+|------------|--------------|----------------|-------|
 ||
 ||
 ||
@@ -121,6 +121,7 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 
 ```
 /project/
+├── images/
 ├── inputs/ (in .gitignore)
 │   ├── text files
 │   ├── html files
@@ -132,10 +133,11 @@ More specifically, can a time-insensitive LLM like CHRONOBERT capture relationsh
 │   ├── bert.csv
 │   ├── traditional.csv
 ├── get_data.ipynb
-├── chronobert.ipynb/
+├── chronobert.ipynb
 ├── bert.ipynb
 ├── traditional.ipynb
 ├── analysis.ipynb
+├── proposal.md
 ```
 
 ---
