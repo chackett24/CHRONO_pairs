@@ -4,7 +4,7 @@
 
 ---
 ## Overview of CHRONOBERT
-CHRONOBERT is a series of large language models designed for time-sensitive applications, trained exclusively on chronologically ordered, timestamped text to eliminate lookahead bias and training leakage. By preserving the integrity of data during training, CHRONOBERT enables more reliable historical analysis and forecasting, particularly in finance and economics. Despite these constraints, it outperforms standard BERT on language understanding benchmarks such as GLUE, making it a strong candidate for tasks where both performance and chronological consistency are essential. Motivated by these results, we explore whether CHRONOBERT can be adapted to forecast asset price spreads for use in pairs trading strategies.
+CHRONOBERT is a series of large language models designed for time-sensitive applications, trained exclusively on chronologically ordered, timestamped text to eliminate lookahead bias and training leakage. By preserving the integrity of data during training, CHRONOBERT enables more reliable historical analysis and forecasting, particularly in finance and economics. Despite these constraints, it outperforms standard BERT on language understanding benchmarks such as GLUE, making it a strong candidate for tasks where both performance and chronological consistency are essential. Motivated by these results, we explore whether CHRONOBERT can be adapted to forecast asset price spreads for use in pairs trading strategies, where long and short positions are taken simultaneosly on a pair of assets with the objective of reducing systematic risks.
 
 ---
 
