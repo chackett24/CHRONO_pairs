@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 st.title('CHRONOBERT Pairs Trading Dashboard')
 
 # Load and prepare data
-spread_df = pd.read_csv("outputs/spreads.csv", parse_dates=["Date"])
+spread_df = pd.read_csv("outputs/spreads_testing.csv", parse_dates=["Date"])
 spread_df.set_index("Date", inplace=True)
 portfolios_df = pd.read_csv("outputs/portfolios.csv", parse_dates=["Date"])
 portfolios_df.set_index("Date", inplace=True)
