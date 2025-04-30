@@ -9,8 +9,6 @@ st.title('CHRONOBERT Pairs Trading Dashboard')
 # Load and prepare data
 spread_df = pd.read_csv("outputs/spreads_testing.csv", parse_dates=["Date"])
 spread_df.set_index("Date", inplace=True)
-#portfolios_df = pd.read_csv("outputs/portfolios.csv", parse_dates=["Date"])
-#portfolios_df.set_index("Date", inplace=True)
 
 chrono_df = pd.read_csv("outputs/CHRONOBERT_spreads_weekly.csv", parse_dates=["Date"])
 chrono_df.set_index("Date", inplace=True)
@@ -30,6 +28,7 @@ spread_df["CHRONOBERT Position"] = np.where(spread_df["CHRONOBERT Spread"] < 0, 
 spread_df["BERT Position"] = np.where(spread_df["BERT Spread"] < 0, "Buy", "Sell")
 spread_df["Traditional Position"] = np.where(spread_df["Traditional Spread"] < 0, "Buy", "Sell")
 
+# Generate Predictions
 position_cols = ['CHRONOBERT Position', 'BERT Position', 'Traditional Position']
 
 for col in position_cols:
@@ -41,7 +40,6 @@ for col in position_cols:
         np.where(spread_df.groupby('Ticker Pair')[col].shift(1) == 'Sell', -spread_df['Return'], np.nan)
     )
     
-#spread_df['CHRONOBERT Cumulative Return'] =spread_df.groupby('Ticker Pair')['CHRONOBERT Strategy Return'].apply(lambda x: (1 + x.fillna(0)).cumprod()).tolist()
 spread_df['CHRONOBERT Cumulative Return'] = spread_df['CHRONOBERT Strategy Return'].fillna(0) + 1
 spread_df['BERT Cumulative Return'] =spread_df['BERT Strategy Return'].fillna(0) + 1
 spread_df['Traditional Cumulative Return'] =spread_df['Traditional Strategy Return'].fillna(0) + 1
@@ -55,12 +53,10 @@ columns_to_save = [
     'CHRONOBERT Cumulative Return', 'BERT Cumulative Return', 'Traditional Cumulative Return'
 ]
 
-# Filter the dataframe to include only these columns
-portfolios_df = spread_df[columns_to_save]
 # Create tabs
-tabs = st.tabs(["Overview", "🔬 Hypotheses", "📊 Data Playground", "🧠 Hypothesis Evaluation"])
+tabs = st.tabs(["Overview", "🔬 Hypotheses", "📊 Data Playground", "🧠 Conclusion"])
 
-# ---- Tab 1: Project Aims ----
+#Tab 1: Overview
 with tabs[0]:
     st.header("Overview")
     st.markdown("""
@@ -89,8 +85,7 @@ with tabs[0]:
 
     We evaluate whether CHRONOBERT can improve:
     - **Spread prediction accuracy** (measured by MSE and R²)
-    - **Profitability of trading signals** (measured by Sharpe Ratio and cumulative returns)
-    - **Out-of-sample robustness** (across different market conditions)
+    - **Profitability of trading signals** (cumulative returns)
 
     We benchmark its performance against:
     - **BERT**, which is not time-aware
@@ -101,7 +96,7 @@ with tabs[0]:
 
 
 
-# ---- Tab 2: Hypotheses ----
+# Tab 2: Hypotheses
 with tabs[1]:
     st.header("Hypotheses")
     st.markdown("""
@@ -127,23 +122,22 @@ with tabs[1]:
 
     To evaluate whether CHRONOBERT provides a meaningful improvement over existing methods, we focus on both **forecasting quality** and **trading performance**:
 
-    - **Prediction Accuracy**  
+    **Prediction Accuracy**  
     - Lower **Mean Squared Error (MSE)** between predicted and actual spreads  
     - Higher **R²** for out-of-sample predictions  
     These metrics assess how well each model captures the dynamics of spread movements.
 
-    - **Trading Performance**  
-    - Higher **Sharpe Ratio** (risk-adjusted returns)  
+    **Trading Performance** 
     - Greater **cumulative returns** across the testing period  
  
-    This indicates reduced overfitting and improved generalizability—key benefits of CHRONOBERT’s time-respecting training.
+    This indicates reduced overfitting and improved generalizability, which are key benefits of CHRONOBERT’s time-respecting training.
 
     By evaluating each model across these dimensions, we can holistically measure whether CHRONOBERT enhances pairs trading outcomes.
     """)
 
 
 
-# ---- Tab 3: Data ----
+# Tab 3: Data
 with tabs[2]:
     st.header("Data")
     st.markdown("Choose a ticker pair to explore:")
@@ -163,12 +157,12 @@ with tabs[2]:
 
     # Filter by pair
     filtered_df = spread_df[spread_df["Ticker Pair"] == selected_pair]
-    filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Strategy Return'].fillna(0) + 1
+    '''filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Strategy Return'].fillna(0) + 1
     filtered_df['BERT Cumulative Return'] =filtered_df['BERT Strategy Return'].fillna(0) + 1
     filtered_df['Traditional Cumulative Return'] =filtered_df['Traditional Strategy Return'].fillna(0) + 1
     filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Cumulative Return'].cumprod()
     filtered_df['BERT Cumulative Return'] = filtered_df['BERT Cumulative Return'].cumprod()
-    filtered_df['Traditional Cumulative Return'] = filtered_df['Traditional Cumulative Return'].cumprod()
+    filtered_df['Traditional Cumulative Return'] = filtered_df['Traditional Cumulative Return'].cumprod()'''
     # Compute metrics
     metrics = {}
     for col in spread_columns:
@@ -237,10 +231,9 @@ with tabs[2]:
         st.info("Select at least one model to evaluate hypotheses.")
 
 
-# ---- Tab 4: Hypothesis Evaluation ----
 with tabs[3]:
     y_true = spread_df["Spread"]
-    final_returns_per_pair = portfolios_df.groupby("Ticker Pair").tail(1)
+    final_returns_per_pair = spread_df.groupby("Ticker Pair").tail(1)
 
 
     avg_returns = {
@@ -289,7 +282,7 @@ with tabs[3]:
     However, additional work—such as improved tokens and parameters is needed in order to create better predictions.
     """)
 
-    # Optional Detailed Table and Charts
+    # Table and Charts
     st.subheader("Metric Summary by Model")
     st.dataframe(metrics_df.style.format({
         "MSE": "{:.4f}",
