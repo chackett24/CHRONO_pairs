@@ -9,8 +9,8 @@ st.title('CHRONOBERT Pairs Trading Dashboard')
 # Load and prepare data
 spread_df = pd.read_csv("outputs/spreads_testing.csv", parse_dates=["Date"])
 spread_df.set_index("Date", inplace=True)
-portfolios_df = pd.read_csv("outputs/portfolios.csv", parse_dates=["Date"])
-portfolios_df.set_index("Date", inplace=True)
+#portfolios_df = pd.read_csv("outputs/portfolios.csv", parse_dates=["Date"])
+#portfolios_df.set_index("Date", inplace=True)
 
 chrono_df = pd.read_csv("outputs/CHRONOBERT_spreads_weekly.csv", parse_dates=["Date"])
 chrono_df.set_index("Date", inplace=True)
@@ -26,6 +26,37 @@ spread_df = spread_df.merge(chrono_df, how="inner", on=["Date", "Ticker Pair"], 
 spread_df = spread_df.merge(bert_df, how="inner", on=["Date", "Ticker Pair"], validate='one_to_one')
 spread_df = spread_df.merge(traditional_df, how="inner", on=["Date", "Ticker Pair"], validate='one_to_one')
 
+spread_df["CHRONOBERT Position"] = np.where(spread_df["CHRONOBERT Spread"] < 0, "Buy", "Sell")
+spread_df["BERT Position"] = np.where(spread_df["BERT Spread"] < 0, "Buy", "Sell")
+spread_df["Traditional Position"] = np.where(spread_df["Traditional Spread"] < 0, "Buy", "Sell")
+
+position_cols = ['CHRONOBERT Position', 'BERT Position', 'Traditional Position']
+
+for col in position_cols:
+    strat_return_col = f'{col.replace("Position", "Strategy Return")}'
+
+    spread_df[strat_return_col] = np.where(
+        spread_df.groupby('Ticker Pair')[col].shift(1)== 'Buy',
+        spread_df['Return'],
+        np.where(spread_df.groupby('Ticker Pair')[col].shift(1) == 'Sell', -spread_df['Return'], np.nan)
+    )
+    
+#spread_df['CHRONOBERT Cumulative Return'] =spread_df.groupby('Ticker Pair')['CHRONOBERT Strategy Return'].apply(lambda x: (1 + x.fillna(0)).cumprod()).tolist()
+spread_df['CHRONOBERT Cumulative Return'] = spread_df['CHRONOBERT Strategy Return'].fillna(0) + 1
+spread_df['BERT Cumulative Return'] =spread_df['BERT Strategy Return'].fillna(0) + 1
+spread_df['Traditional Cumulative Return'] =spread_df['Traditional Strategy Return'].fillna(0) + 1
+spread_df['CHRONOBERT Cumulative Return'] = (spread_df.groupby('Ticker Pair')['CHRONOBERT Cumulative Return'].cumprod())
+spread_df['BERT Cumulative Return'] = (spread_df.groupby('Ticker Pair')['BERT Cumulative Return'].cumprod())
+spread_df['Traditional Cumulative Return'] = (spread_df.groupby('Ticker Pair')['Traditional Cumulative Return'].cumprod())
+
+columns_to_save = [
+    'Ticker Pair', 
+    'CHRONOBERT Strategy Return', 'BERT Strategy Return', 'Traditional Strategy Return',
+    'CHRONOBERT Cumulative Return', 'BERT Cumulative Return', 'Traditional Cumulative Return'
+]
+
+# Filter the dataframe to include only these columns
+portfolios_df = spread_df[columns_to_save]
 # Create tabs
 tabs = st.tabs(["Overview", "🔬 Hypotheses", "📊 Data Playground", "🧠 Hypothesis Evaluation"])
 
@@ -132,8 +163,12 @@ with tabs[2]:
 
     # Filter by pair
     filtered_df = spread_df[spread_df["Ticker Pair"] == selected_pair]
-    port_df = portfolios_df[portfolios_df["Ticker Pair"] == selected_pair]
-
+    filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Strategy Return'].fillna(0) + 1
+    filtered_df['BERT Cumulative Return'] =filtered_df['BERT Strategy Return'].fillna(0) + 1
+    filtered_df['Traditional Cumulative Return'] =filtered_df['Traditional Strategy Return'].fillna(0) + 1
+    filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Cumulative Return'].cumprod()
+    filtered_df['BERT Cumulative Return'] = filtered_df['BERT Cumulative Return'].cumprod()
+    filtered_df['Traditional Cumulative Return'] = filtered_df['Traditional Cumulative Return'].cumprod()
     # Compute metrics
     metrics = {}
     for col in spread_columns:
@@ -154,11 +189,11 @@ with tabs[2]:
     if not return_columns:
         st.info("Please check at least one model to view return plots.")
     else:
-        st.line_chart(port_df[return_columns])
+        st.line_chart(filtered_df[return_columns])
         
         st.subheader("Hypothesis Evaluation Based on Your Selections")
 
-    if metrics and not port_df.empty:
+    if metrics and not filtered_df.empty:
         # H1: Check which model had lowest MSE
         best_model_spread = min(metrics.items(), key=lambda x: x[1]["MSE"])[0]
         best_r2_model = max(metrics.items(), key=lambda x: x[1]["R²"])[0]
@@ -176,7 +211,7 @@ with tabs[2]:
             h1_support = "🟡 Kind of Supported"
 
         # H2: Check which model had highest cumulative return
-        final_returns = port_df[return_columns].iloc[-1]
+        final_returns = filtered_df[return_columns].iloc[-1]
         best_return_model = final_returns.idxmax()
         h2_support = "✅ Supported" if "CHRONOBERT Cumulative Return" == best_return_model else "❌ Not Supported"
 
