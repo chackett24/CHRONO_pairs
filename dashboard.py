@@ -204,8 +204,35 @@ with tabs[2]:
 
 # ---- Tab 4: Hypothesis Evaluation ----
 with tabs[3]:
-    metrics_df = pd.read_csv("outputs/overall_results.csv")
+    y_true = spread_df["Spread"]
+    final_returns_per_pair = portfolios_df.groupby("Ticker Pair").tail(1)
 
+
+    avg_returns = {
+        "CHRONOBERT": final_returns_per_pair["CHRONOBERT Cumulative Return"].mean(),
+        "BERT": final_returns_per_pair["BERT Cumulative Return"].mean(),
+        "Traditional": final_returns_per_pair["Traditional Cumulative Return"].mean(),
+    }
+
+    results = {
+        "Model": ["CHRONOBERT", "BERT", "Traditional"],
+        "MSE": [
+            mean_squared_error(y_true, spread_df["CHRONOBERT Spread"]),
+            mean_squared_error(y_true, spread_df["BERT Spread"]),
+            mean_squared_error(y_true, spread_df["Traditional Spread"]),
+        ],
+        "R2": [
+            r2_score(y_true, spread_df["CHRONOBERT Spread"]),
+            r2_score(y_true, spread_df["BERT Spread"]),
+            r2_score(y_true, spread_df["Traditional Spread"]),
+        ],
+        "Return": [
+            avg_returns["CHRONOBERT"],
+            avg_returns["BERT"],
+            avg_returns["Traditional"],
+        ]
+    }
+    metrics_df = pd.DataFrame(results)
     # Identify best-performing model based on MSE and R²
     best_mse_model = metrics_df.loc[metrics_df["MSE"].idxmin(), "Model"]
     best_r2_model = metrics_df.loc[metrics_df["R2"].idxmax(), "Model"]
