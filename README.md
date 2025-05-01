@@ -4,6 +4,8 @@ Time-Aware Forecasting and Strategy Design
 
 Try the live dashboard here: [chronopairs.streamlit.app](https://chronopairs.streamlit.app)
 
+Check out our presentation here: [CHRONOPAIRS Slides](https://docs.google.com/presentation/d/1_ueSGklRvFMhRAZCGbBZozM9YPDg-Us9kv4X-1G6-tE/edit?usp=sharing)
+
 ## Project Overview
 
 This project explores whether CHRONOBERT, a Transformer model that incorporates temporal structure, improves spread prediction and trading performance in pairs trading strategies compared to standard BERT and traditional econometric models.
