@@ -6,6 +6,9 @@ from sklearn.metrics import r2_score, mean_squared_error
 st.set_page_config(layout="wide")
 st.title('CHRONOBERT Pairs Trading Dashboard')
 
+# This file does all of the stuff analysis.ipynb does so that it can do it live with the most recent information
+# Most of that analysis is done up above by loading and merging and transforming the most recent predictions
+
 # Load and prepare data
 spread_df = pd.read_csv("outputs/spreads_testing.csv", parse_dates=["Date"])
 spread_df.set_index("Date", inplace=True)
@@ -52,6 +55,8 @@ columns_to_save = [
     'CHRONOBERT Strategy Return', 'BERT Strategy Return', 'Traditional Strategy Return',
     'CHRONOBERT Cumulative Return', 'BERT Cumulative Return', 'Traditional Cumulative Return'
 ]
+
+# End of analysis code for the most part
 
 # Create tabs
 tabs = st.tabs(["Overview", "🔬 Hypotheses", "📊 Data Playground", "🧠 Conclusion"])
