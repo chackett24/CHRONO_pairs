@@ -31,6 +31,7 @@ The project evaluates each model's ability to:
 ```
 ├── dashboard.py                 # Streamlit web application
 ├── proposal.md                  # Project proposal
+├── CHRONOPAIRS_Presentation.py  # Class Presentation Slides
 ├── requirements.txt             # Dependencies
 ├── analysis.ipynb              # Combined evaluation and plotting
 ├── get_data.ipynb              # Data acquisition and preprocessing
