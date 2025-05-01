@@ -85,9 +85,7 @@ The project evaluates each model's ability to:
 
 ## Notes and Future Work
 
-- The underperformance of BERT and CHRONOBERT highlights a critical issue in how textual data is tokenized and preprocessed before being fed into the models.
+- We found underperformance of BERT and CHRONOBERT highlights could be a potential issue in how textual data is tokenized and preprocessed before being fed into the models since small changes in tokens produced large changes in results.
 - Future iterations of this project will focus on:
-  - Improving news preprocessing and filtering.
-  - Experimenting with domain-specific LLMs or fine-tuned financial transformers.
   - Aligning tokenization windows more closely with trading periods.
-  - Exploring ensemble and hybrid models combining traditional features with embeddings from LLMs.
+  - Tuning model parameters more.
