@@ -157,12 +157,6 @@ with tabs[2]:
 
     # Filter by pair
     filtered_df = spread_df[spread_df["Ticker Pair"] == selected_pair]
-    '''filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Strategy Return'].fillna(0) + 1
-    filtered_df['BERT Cumulative Return'] =filtered_df['BERT Strategy Return'].fillna(0) + 1
-    filtered_df['Traditional Cumulative Return'] =filtered_df['Traditional Strategy Return'].fillna(0) + 1
-    filtered_df['CHRONOBERT Cumulative Return'] = filtered_df['CHRONOBERT Cumulative Return'].cumprod()
-    filtered_df['BERT Cumulative Return'] = filtered_df['BERT Cumulative Return'].cumprod()
-    filtered_df['Traditional Cumulative Return'] = filtered_df['Traditional Cumulative Return'].cumprod()'''
     # Compute metrics
     metrics = {}
     for col in spread_columns:
